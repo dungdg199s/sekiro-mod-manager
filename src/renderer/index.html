@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sekiro Mod Manager</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1 data-i18n="appTitle">🎮 Sekiro Mod Manager</h1>
+        <div class="header-actions">
+          <button id="settingsBtn" class="btn btn-secondary" data-i18n="settingsBtn">
+            ⚙️ Settings
+          </button>
+          <button id="uploadBtn" class="btn btn-primary" data-i18n="uploadBtn">
+            ➕ Upload Mod
+          </button>
+        </div>
+      </header>
+
+      <div class="settings-panel" id="settingsPanel" style="display: none">
+        <div class="settings-content">
+          <h3 data-i18n="settingsTitle">Settings</h3>
+          <div class="form-group">
+            <label data-i18n="gameDirLabel">Sekiro game directory:</label>
+            <div class="input-with-button">
+              <input
+                type="text"
+                id="gameDirInput"
+                readonly
+                data-i18n-placeholder="gameDirPlaceholder"
+                placeholder="Not selected"
+              />
+              <button id="selectGameDirBtn" class="btn btn-secondary" data-i18n="selectDirBtn">
+                Select folder
+              </button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label data-i18n="languageLabel">Language:</label>
+            <select id="languageSelect" class="language-select">
+              <option value="vi">Tiếng Việt</option>
+              <option value="en">English</option>
+            </select>
+          </div>
+          <button id="closeSettingsBtn" class="btn btn-secondary" data-i18n="closeBtn">Close</button>
+        </div>
+      </div>
+
+      <div class="upload-modal" id="uploadModal" style="display: none">
+        <div class="modal-content">
+          <h2 data-i18n="uploadModalTitle">Upload New Mod</h2>
+          <form id="uploadForm">
+            <div class="form-group file-select-group">
+              <label for="modFile" data-i18n="modFileLabel">Mod File (ZIP/RAR):</label>
+              <div class="input-with-button">
+                <input
+                  type="text"
+                  id="modFilePath"
+                  readonly
+                  data-i18n-placeholder="modFilePlaceholder"
+                  placeholder="Select zip or rar file"
+                />
+                <button
+                  type="button"
+                  id="selectFileBtn"
+                  class="btn btn-secondary"
+                  data-i18n="selectFileBtn"
+                >
+                  Select file
+                </button>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="modName" data-i18n="modNameLabel">Mod Name:</label>
+              <input
+                type="text"
+                id="modName"
+                required
+                data-i18n-placeholder="modNamePlaceholder"
+                placeholder="Enter mod name"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="modDescription" data-i18n="modDescLabel">Description:</label>
+              <textarea
+                id="modDescription"
+                rows="4"
+                data-i18n-placeholder="modDescPlaceholder"
+                placeholder="Enter mod description (optional)"
+              ></textarea>
+            </div>
+
+            <div class="form-actions">
+              <button type="button" id="cancelBtn" class="btn btn-secondary" data-i18n="cancelBtn">
+                Cancel
+              </button>
+              <button type="submit" class="btn btn-primary" data-i18n="saveBtn">Save Mod</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <main>
+        <div id="modsContainer" class="mods-container"></div>
+      </main>
+    </div>
+
+    <!-- Status Bar -->
+    <div id="statusBar" class="status-bar">
+      <span id="statusText"></span>
+    </div>
+
+    <script src="translations.js"></script>
+    <script src="renderer.js"></script>
+  </body>
+</html>

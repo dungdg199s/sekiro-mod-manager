@@ -1,0 +1,65 @@
+{
+  "name": "sekiro-mod-manager",
+  "version": "1.0.0",
+  "description": "A desktop mod manager for Sekiro: Shadows Die Twice built with Electron.js",
+  "main": "src/main/main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "format": "prettier --write \"src/**/*.{js,html,css,json}\"",
+    "build": "electron-builder --dir",
+    "dist": "electron-builder"
+  },
+  "build": {
+    "appId": "com.dungdg199s.sekiro-mod-manager",
+    "productName": "Sekiro Mod Manager",
+    "directories": {
+      "output": "dist"
+    },
+    "files": ["src/**/*", "package.json"],
+    "win": {
+      "target": ["portable"]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Sekiro Mod Manager"
+    },
+    "portable": {
+      "artifactName": "${productName}-${version}-portable.exe"
+    }
+  },
+  "keywords": [
+    "sekiro",
+    "mod",
+    "manager",
+    "electron",
+    "game",
+    "modding",
+    "nexusmods"
+  ],
+  "author": {
+    "name": "Dung Le",
+    "email": "dungdg199s@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dungdg199s/sekiro-mod-manager.git"
+  },
+  "bugs": {
+    "url": "https://github.com/dungdg199s/sekiro-mod-manager/issues"
+  },
+  "homepage": "https://github.com/dungdg199s/sekiro-mod-manager#readme",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^26.4.0",
+    "prettier": "^3.8.1"
+  },
+  "dependencies": {
+    "adm-zip": "^0.5.10",
+    "node-unrar-js": "^2.0.2"
+  }
+}
