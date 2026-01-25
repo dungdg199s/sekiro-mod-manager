@@ -14,21 +14,16 @@
     "appId": "com.dungdg199s.sekiro-mod-manager",
     "productName": "Sekiro Mod Manager",
     "directories": {
-      "output": "dist"
+      "output": "dist",
+      "buildResources": "assets/icons"
     },
-    "files": ["src/**/*", "package.json"],
+    "files": [
+      "src/**/*",
+      "package.json"
+    ],
     "win": {
-      "target": ["portable"]
-    },
-    "nsis": {
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": true,
-      "createDesktopShortcut": true,
-      "createStartMenuShortcut": true,
-      "shortcutName": "Sekiro Mod Manager"
-    },
-    "portable": {
-      "artifactName": "${productName}-${version}-portable.exe"
+      "icon": "./assets/icons/win/icon.ico",
+      "requestedExecutionLevel": "asInvoker"
     }
   },
   "keywords": [
@@ -56,6 +51,7 @@
   "devDependencies": {
     "electron": "^28.0.0",
     "electron-builder": "^26.4.0",
+    "electron-icon-maker": "^0.0.5",
     "prettier": "^3.8.1"
   },
   "dependencies": {

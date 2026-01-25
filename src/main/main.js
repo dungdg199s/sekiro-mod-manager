@@ -15,7 +15,7 @@ function createWindow() {
       contextIsolation: true,
     },
     autoHideMenuBar: true,
-    icon: path.join(__dirname, '..', 'assets', 'icon.png'),
+    icon: path.join( 'assets', 'icons', 'win', 'icon.ico'),
   });
 
   mainWindow.loadFile(path.join(__dirname, '..', 'renderer', 'index.html'));

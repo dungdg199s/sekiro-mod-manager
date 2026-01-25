@@ -39,9 +39,22 @@ Built files will be in the `dist/` folder:
 
 ## Custom Icon
 
-Place your icon file at `assets/icon.ico` (256x256 recommended).
+The app uses the icon at `assets/icon.png` (or `assets/icon.ico`).
 
-If you don't have an icon, the default Electron icon will be used.
+**Icon Requirements:**
+- Format: PNG (256x256 or larger) or ICO
+- electron-builder will automatically convert PNG to ICO for Windows
+- Recommended size: 512x512 or 1024x1024 for best quality
+
+**To change the icon:**
+1. Replace `assets/icon.png` with your custom icon
+2. Rebuild: `yarn build`
+
+The icon will be applied to:
+- Application window
+- Taskbar
+- File explorer
+- Desktop shortcut (if created)
 
 ## Configuration
 
