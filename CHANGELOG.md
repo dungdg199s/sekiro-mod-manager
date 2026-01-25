@@ -32,12 +32,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Category System**: Implemented predefined mod categories based on Nexus Mods standard
+  - 10 fixed categories: Audio, Customisation, Death Screens, Gameplay, Miscellaneous, Saved Games, User Interface, Utilities, Visuals and Graphics, Weapons and Armour
+  - Multi-select category assignment via checkbox grid in upload/edit modal
+  - Category badges displayed on mod cards with gradient styling
+  - Category filter bar with all categories + "All Mods" option
+  - Category-based mod filtering functionality
+
+### Changed
+- Replaced free-form tag input system with predefined category checkboxes
+- Updated UI from text input to 2-column checkbox grid for better UX
+- Mod data structure: `tags` field renamed to `categories`
+- Filter interface now shows fixed categories instead of dynamic tags
+
+### Technical
+- Added `PREDEFINED_CATEGORIES` constant in renderer.js
+- Renamed IPC handlers: `add-tag` → `add-category`, `remove-tag` → `remove-category`, `get-all-tags` → `get-all-categories`
+- Updated API methods in preload.js to use category terminology
+- CSS classes renamed: `.mod-tags` → `.mod-categories`, `.tag-filter` → `.category-filter`, etc.
+- Checkbox grid styling with hover and checked states
+- Translations updated for Vietnamese and English
+
 ### Planned
 - Windows installer (.exe)
-- Mod categories/tags
-- Search and filter mods
+- Search functionality for mods
 - Mod profiles (save/load mod configurations)
 - Backup and restore functionality
 - More languages support
 - Update checker
 - Mod compatibility database
+- Subcategories or custom tags within categories

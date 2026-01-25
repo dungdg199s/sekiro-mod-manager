@@ -23,16 +23,19 @@ const translations = {
     modNamePlaceholder: 'Nhập tên mod',
     modDescLabel: 'Mô tả:',
     modDescPlaceholder: 'Nhập mô tả cho mod (không bắt buộc)',
+    modCategoriesLabel: 'Danh mục:',
     cancelBtn: 'Hủy',
     saveBtn: 'Lưu Mod',
     updateBtn: 'Cập nhật',
 
     // Mod List
     emptyState: 'Chưa có mod nào. Hãy upload mod đầu tiên!\n\nBạn có thể kéo thả file ZIP vào đây',
+    noModsWithCategory: 'Không có mod nào trong danh mục này',
     editBtn: '✏️ Sửa',
     deleteBtn: '🗑️ Xóa',
     dropZoneText: 'Kéo thả file mod vào đây',
     dropZoneHint: 'Hỗ trợ ZIP và RAR',
+    filterAll: 'Tất cả Mod',
 
     // Messages
     selectModFileMsg: 'Vui lòng chọn file mod!',
@@ -86,16 +89,19 @@ const translations = {
     modNamePlaceholder: 'Enter mod name',
     modDescLabel: 'Description:',
     modDescPlaceholder: 'Enter mod description (optional)',
+    modCategoriesLabel: 'Categories:',
     cancelBtn: 'Cancel',
     saveBtn: 'Save Mod',
     updateBtn: 'Update',
 
     // Mod List
     emptyState: 'No mods yet. Upload your first mod!\n\nYou can drag and drop ZIP files here',
+    noModsWithCategory: 'No mods in this category',
     editBtn: '✏️ Edit',
     deleteBtn: '🗑️ Delete',
     dropZoneText: 'Drag and drop mod files here',
     dropZoneHint: 'Supports ZIP and RAR',
+    filterAll: 'All Mods',
 
     // Messages
     selectModFileMsg: 'Please select a mod file!',

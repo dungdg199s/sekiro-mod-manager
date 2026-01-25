@@ -45,7 +45,7 @@ ipcMain.handle('select-mod-file', async () => {
  */
 ipcMain.handle('save-mod', async (event, modData) => {
   try {
-    const { filePath, name, description } = modData;
+    const { filePath, name, description, categories } = modData;
 
     // Tạo ID unique cho mod
     const modId = Date.now().toString();
@@ -63,6 +63,7 @@ ipcMain.handle('save-mod', async (event, modData) => {
       id: modId,
       name,
       description,
+      categories: categories || [],
       zipPath: modArchivePath,
       active: false,
       createdAt: new Date().toISOString(),
@@ -85,7 +86,7 @@ ipcMain.handle('save-mod', async (event, modData) => {
  */
 ipcMain.handle('update-mod', async (event, modId, modData) => {
   try {
-    const { name, description } = modData;
+    const { name, description, categories } = modData;
 
     // Đọc danh sách mod
     const mods = readMods();
@@ -98,6 +99,9 @@ ipcMain.handle('update-mod', async (event, modId, modData) => {
     // Cập nhật thông tin
     mod.name = name;
     mod.description = description;
+    if (categories !== undefined) {
+      mod.categories = categories;
+    }
     mod.updatedAt = new Date().toISOString();
 
     // Lưu lại
@@ -306,6 +310,87 @@ ipcMain.handle('delete-mod', async (event, modId) => {
   } catch (error) {
     console.error('Error deleting mod:', error);
     return { success: false, error: error.message };
+  }
+});
+
+/**
+ * Add category to mod
+ */
+ipcMain.handle('add-category', async (event, modId, category) => {
+  try {
+    const mods = readMods();
+    const mod = mods.find(m => m.id === modId);
+
+    if (!mod) {
+      return { success: false, error: 'Mod not found' };
+    }
+
+    // Initialize categories array if not exists
+    if (!mod.categories) {
+      mod.categories = [];
+    }
+
+    // Check if category already exists
+    if (mod.categories.includes(category)) {
+      return { success: false, error: 'Category already exists' };
+    }
+
+    // Add category
+    mod.categories.push(category);
+    saveMods(mods);
+
+    return { success: true, mod };
+  } catch (error) {
+    console.error('Error adding category:', error);
+    return { success: false, error: error.message };
+  }
+});
+
+/**
+ * Remove category from mod
+ */
+ipcMain.handle('remove-category', async (event, modId, category) => {
+  try {
+    const mods = readMods();
+    const mod = mods.find(m => m.id === modId);
+
+    if (!mod) {
+      return { success: false, error: 'Mod not found' };
+    }
+
+    if (!mod.categories) {
+      return { success: false, error: 'No categories found' };
+    }
+
+    // Remove category
+    mod.categories = mod.categories.filter(c => c !== category);
+    saveMods(mods);
+
+    return { success: true, mod };
+  } catch (error) {
+    console.error('Error removing category:', error);
+    return { success: false, error: error.message };
+  }
+});
+
+/**
+ * Get all unique categories from all mods
+ */
+ipcMain.handle('get-all-categories', async () => {
+  try {
+    const mods = readMods();
+    const categoriesSet = new Set();
+
+    mods.forEach(mod => {
+      if (mod.categories && Array.isArray(mod.categories)) {
+        mod.categories.forEach(category => categoriesSet.add(category));
+      }
+    });
+
+    return Array.from(categoriesSet).sort();
+  } catch (error) {
+    console.error('Error getting categories:', error);
+    return [];
   }
 });
 

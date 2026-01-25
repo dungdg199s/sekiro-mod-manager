@@ -452,3 +452,108 @@ input:checked + .slider:before {
 .status-bar.info {
   background: #17a2b8;
 }
+/* Category Styles */
+
+/* Categories in mod card */
+.mod-categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+  min-height: 24px;
+}
+
+.mod-category {
+  display: inline-block;
+  padding: 4px 10px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* Category checkboxes grid in modal */
+.categories-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  padding: 15px;
+  background: #1e1e2e;
+  border: 1px solid #4a4a5e;
+  border-radius: 6px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.category-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  background: #2a2a3e;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  user-select: none;
+}
+
+.category-checkbox:hover {
+  background: #3a3a4e;
+}
+
+.category-checkbox input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: #667eea;
+}
+
+.category-checkbox span {
+  color: #e0e0e0;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.category-checkbox input[type="checkbox"]:checked + span {
+  color: #667eea;
+}
+
+/* Filter bar */
+.filter-bar {
+  background: #252535;
+  padding: 15px 30px;
+  border-bottom: 1px solid #3a3a4e;
+  overflow-x: auto;
+}
+
+.filter-categories {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.category-filter {
+  padding: 8px 16px;
+  background: #3a3a4e;
+  color: #b0b0b0;
+  border: 2px solid transparent;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.category-filter:hover {
+  background: #4a4a5e;
+  color: #e0e0e0;
+}
+
+.category-filter.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-color: transparent;
+}

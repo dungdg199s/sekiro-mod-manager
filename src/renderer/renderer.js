@@ -2,6 +2,20 @@ let gameDir = localStorage.getItem('gameDir') || '';
 let selectedModFile = null;
 let currentLang = localStorage.getItem('language') || 'en';
 let editingModId = null; // ID of the mod currently being edited
+let currentCategories = []; // Categories for current mod being uploaded/edited
+let currentCategoryFilter = 'all'; // Current category filter
+
+// Predefined categories from Sekiro Nexus Mods
+const PREDEFINED_CATEGORIES = [
+  'Audio',
+  'Skins',
+  'Items',
+  'Weapons',
+  'Gameplay',
+  'UI',
+  'Utilities',
+  'Visuals & Graphics'
+];
 
 // Status bar and debounce
 let statusTimeout = null;
@@ -60,6 +74,7 @@ function setLanguage(lang) {
 
   // Reload mods to update UI text
   loadMods();
+  updateFilterCategories();
 }
 
 // Elements
@@ -99,6 +114,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Set up drag and drop for the file zone
   loadMods();
+  updateFilterCategories();
+
+  // Setup categories grid
+  renderCategoriesGrid();
 });
 
 // Drag and drop file zone
@@ -217,6 +236,7 @@ uploadForm.addEventListener('submit', async e => {
     const modData = {
       name: document.getElementById('modName').value,
       description: document.getElementById('modDescription').value,
+      categories: currentCategories,
     };
 
     await updateMod(editingModId, modData);
@@ -231,6 +251,7 @@ uploadForm.addEventListener('submit', async e => {
       filePath: selectedModFile,
       name: document.getElementById('modName').value,
       description: document.getElementById('modDescription').value,
+      categories: currentCategories,
     };
 
     const result = await window.electronAPI.saveMod(modData);
@@ -239,18 +260,49 @@ uploadForm.addEventListener('submit', async e => {
       alert(t('modSavedMsg'));
       closeUploadModal();
       loadMods();
+      updateFilterCategories();
     } else {
       alert(t('errorMsg').replace('{error}', result.error));
     }
   }
 });
 
+// Category management functions
+function renderCategoriesGrid() {
+  const grid = document.getElementById('categoriesGrid');
+  if (!grid) return;
+
+  grid.innerHTML = PREDEFINED_CATEGORIES.map(category => `
+    <label class="category-checkbox">
+      <input 
+        type="checkbox" 
+        value="${escapeHtml(category)}" 
+        ${currentCategories.includes(category) ? 'checked' : ''}
+        onchange="toggleCategory('${escapeHtml(category)}', this.checked)"
+      />
+      <span>${escapeHtml(category)}</span>
+    </label>
+  `).join('');
+}
+
+function toggleCategory(category, checked) {
+  if (checked) {
+    if (!currentCategories.includes(category)) {
+      currentCategories.push(category);
+    }
+  } else {
+    currentCategories = currentCategories.filter(c => c !== category);
+  }
+}
+
 function closeUploadModal() {
   uploadModal.style.display = 'none';
   uploadForm.reset();
   selectedModFile = null;
   editingModId = null;
+  currentCategories = [];
   document.getElementById('modFilePath').value = '';
+  renderCategoriesGrid();
 
   // Reset UI về upload mode
   document.querySelector('.file-select-group').style.display = 'flex';
@@ -260,14 +312,32 @@ function closeUploadModal() {
 
 // Load và hiển thị danh sách mod
 async function loadMods() {
-  const mods = await window.electronAPI.getMods();
+  const allMods = await window.electronAPI.getMods();
+
+  console.log(currentCategoryFilter);
+  
+  
+  // Filter mods based on current category filter
+  const mods = currentCategoryFilter === 'all' 
+    ? allMods 
+    : allMods.filter(mod => mod.categories && mod.categories.includes(currentCategoryFilter));
 
   if (mods.length === 0) {
-    modsContainer.innerHTML = `<div class="empty-state">${t('emptyState')}</div>`;
+    const emptyMsg = currentCategoryFilter === 'all' 
+      ? t('emptyState') 
+      : t('noModsWithCategory');
+    modsContainer.innerHTML = `<div class="empty-state">${emptyMsg}</div>`;
   } else {
     modsContainer.innerHTML = mods
       .map(
-        (mod, index) => `
+        (mod, index) => {
+          const categoriesHtml = mod.categories && mod.categories.length > 0
+            ? `<div class="mod-categories">
+                ${mod.categories.map(cat => `<span class="mod-category">${escapeHtml(cat)}</span>`).join('')}
+               </div>`
+            : '';
+          
+          return `
       <div class="mod-card" draggable="true" data-mod-id="${mod.id}" data-order="${index}">
         <div class="mod-header">
           <div class="drag-handle">☰</div>
@@ -279,6 +349,7 @@ async function loadMods() {
             <span class="slider"></span>
           </label>
         </div>
+        ${categoriesHtml}
         <p class="mod-description">${escapeHtml(mod.description || t('noDescription'))}</p>
         <div class="mod-footer">
           <span class="mod-date">📅 ${new Date(mod.createdAt).toLocaleDateString(
@@ -294,7 +365,8 @@ async function loadMods() {
           </div>
         </div>
       </div>
-    `
+    `;
+        }
       )
       .join('');
 
@@ -512,6 +584,10 @@ async function editMod(modId) {
   document.getElementById('modName').value = mod.name;
   document.getElementById('modDescription').value = mod.description || '';
   document.getElementById('modFilePath').value = '';
+  
+  // Load categories
+  currentCategories = mod.categories || [];
+  renderCategoriesGrid();
 
   // Ẩn phần chọn file (không thể thay đổi file archive)
   document.querySelector('.file-select-group').style.display = 'none';
@@ -529,12 +605,43 @@ async function updateMod(modId, modData) {
   const result = await window.electronAPI.updateMod(modId, modData);
 
   if (result.success) {
-    alert(t('modUpdatedMsg'));
+    showStatus(t('modUpdatedMsg'), 'success');
     closeUploadModal();
     loadMods();
+    updateFilterCategories();
   } else {
     alert(t('errorMsg').replace('{error}', result.error));
   }
+}
+
+// Category filter functions
+async function updateFilterCategories() {
+  const filterCategories = document.getElementById('filterCategories');
+  
+  if (!filterCategories) return;
+
+  const allButton = `
+    <button class="category-filter ${currentCategoryFilter === 'all' ? 'active' : ''}" 
+            data-category="all" onclick="filterByCategory('all')">
+      <span data-i18n="filterAll">All Mods</span>
+    </button>
+  `;
+
+  const categoryButtons = PREDEFINED_CATEGORIES.map(category => `
+    <button class="category-filter ${currentCategoryFilter === category ? 'active' : ''}" 
+            data-category="${escapeHtml(category)}" 
+            onclick="filterByCategory('${escapeHtml(category)}')">
+      ${escapeHtml(category)}
+    </button>
+  `).join('');
+
+  filterCategories.innerHTML = allButton + categoryButtons;
+}
+
+function filterByCategory(category) {
+  currentCategoryFilter = category;
+  loadMods();
+  updateFilterCategories();
 }
 
 // Utility function
