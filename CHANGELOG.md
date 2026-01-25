@@ -5,6 +5,40 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- Category system for mods with 8 predefined categories:
+  - Audio
+  - Skins
+  - Items
+  - Weapons
+  - Gameplay
+  - UI
+  - Utilities
+  - Visuals & Graphics
+- Category filter bar to filter mods by category
+- Category checkbox grid in upload modal
+
+### Changed
+- Replaced free-form tags with fixed category system
+- Improved UI for category management with checkboxes
+- Enhanced category badge styling
+
+### Technical  
+- Implemented modular vanilla JavaScript architecture
+- Created comprehensive module system:
+  - State management: reactive Proxy-based appState, storageManager
+  - Service layer: modService, i18nService, validationService
+  - UI components: modCard, modal, categoryUI, dropZone, dragAndDrop, statusBar
+  - Utilities: sanitize (XSS prevention), domHelpers, debounce, eventBus
+- Replaced 660-line monolithic renderer.js with organized modules
+- Implemented app.js as main entry point
+- Added ES6 module support to index.html
+- Improved code maintainability with clear separation of concerns
+- Added comprehensive JSDoc documentation
+- Implemented event-driven architecture with pub/sub pattern
+
 ## [1.0.0] - 2026-01-25
 
 ### Added
