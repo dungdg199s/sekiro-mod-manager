@@ -7,6 +7,9 @@ import { appState } from '../state/appState.js';
 import { eventBus, APP_EVENTS } from '../utils/eventBus.js';
 import { storage } from '../state/storageManager.js';
 import { STORAGE_KEYS } from '../constants.js';
+import { createLogger } from '../utils/logger.js';
+
+const logger = createLogger('i18nService');
 
 // Import translations (will use existing translations.js)
 let translations = null;
@@ -16,7 +19,17 @@ let translations = null;
  * @param {Object} translationsData - Translations object
  */
 export function initI18n(translationsData) {
+  logger.fnStart('initI18n');
   translations = translationsData;
+
+  if (!translations || Object.keys(translations).length === 0) {
+    logger.error('No translations provided!');
+    return;
+  }
+
+  logger.info('Available languages:', Object.keys(translations));
+  logger.success('i18n initialized successfully');
+  logger.fnEnd('initI18n');
 }
 
 /**
@@ -28,14 +41,24 @@ export function initI18n(translationsData) {
  * t('errorMsg', { error: 'File not found' })
  */
 export function t(key, replacements = {}) {
+  if (!translations) {
+    logger.warn('Translations not initialized, returning key:', key);
+    return key;
+  }
+
   const lang = appState.state.currentLang;
-  let text = translations?.[lang]?.[key] || key;
-  
+  let text = translations?.[lang]?.[key];
+
+  if (!text) {
+    logger.warn(`Translation not found for key '${key}' in language '${lang}'`);
+    return key;
+  }
+
   // Replace placeholders
   Object.entries(replacements).forEach(([placeholder, value]) => {
     text = text.replace(`{${placeholder}}`, value);
   });
-  
+
   return text;
 }
 
@@ -48,7 +71,7 @@ export function setLanguage(lang) {
     console.warn(`Language '${lang}' not available`);
     return;
   }
-  
+
   appState.state.currentLang = lang;
   storage.set(STORAGE_KEYS.LANGUAGE, lang);
   updateUI();
@@ -72,13 +95,13 @@ export function updateUI() {
     const key = el.getAttribute('data-i18n');
     el.textContent = t(key);
   });
-  
+
   // Update placeholders with data-i18n-placeholder attribute
   document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
     const key = el.getAttribute('data-i18n-placeholder');
     el.placeholder = t(key);
   });
-  
+
   // Update titles with data-i18n-title attribute
   document.querySelectorAll('[data-i18n-title]').forEach(el => {
     const key = el.getAttribute('data-i18n-title');

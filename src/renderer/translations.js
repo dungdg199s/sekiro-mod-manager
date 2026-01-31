@@ -136,3 +136,7 @@ const translations = {
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = translations;
 }
+
+if (typeof window !== 'undefined') {
+  window.translations = translations;
+}

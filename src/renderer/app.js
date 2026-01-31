@@ -32,12 +32,16 @@ import { showStatus, showSuccess, showError, showWarning } from './modules/ui/st
 import { $, hide, show } from './modules/utils/domHelpers.js';
 import { debounce } from './modules/utils/debounce.js';
 import { SELECTORS, DEBOUNCE_DELAYS } from './modules/constants.js';
+import { createLogger } from './modules/utils/logger.js';
+
+const logger = createLogger('App');
 
 /**
  * Main App class
  */
 class App {
   constructor() {
+    logger.info('App instance created');
     this.initialized = false;
   }
   
@@ -45,23 +49,39 @@ class App {
    * Initialize application
    */
   async init() {
-    if (this.initialized) return;
+    if (this.initialized) {
+      logger.warn('App already initialized');
+      return;
+    }
+    
+    logger.fnStart('init');
     
     // Initialize i18n with global translations
+    logger.info('Initializing i18n');
+    
+    if (!window.translations) {
+      logger.error('window.translations not found! Make sure translations.js is loaded.');
+      logger.warn('Using empty translations object');
+    }
+    
     initI18n(window.translations || {});
     
     // Setup all event listeners
+    logger.info('Setting up UI');
     this.setupUI();
     this.setupStateSubscriptions();
     
     // Load initial data
+    logger.info('Loading initial data');
     await this.loadInitialData();
     
     // Initial render
+    logger.info('Rendering UI');
     this.render();
     
     this.initialized = true;
-    console.log('App initialized successfully');
+    logger.success('App initialized successfully');
+    logger.fnEnd('init');
   }
   
   /**

@@ -6,6 +6,9 @@
 import { escapeHtml } from '../utils/sanitize.js';
 import { t } from '../services/i18nService.js';
 import { appState } from '../state/appState.js';
+import { createLogger } from '../utils/logger.js';
+
+const logger = createLogger('ModCard');
 
 /**
  * Create mod card HTML
@@ -14,6 +17,7 @@ import { appState } from '../state/appState.js';
  * @returns {string} HTML string
  */
 export function createModCard(mod, index) {
+  logger.debug(`Creating card for mod: ${mod.name}`, { modId: mod.id, index });
   const { currentLang } = appState.state;
   
   const categoriesHtml = mod.categories && mod.categories.length > 0
@@ -74,16 +78,24 @@ export function createModCard(mod, index) {
  * @param {Array} mods - Array of mods
  */
 export function renderModList(container, mods) {
-  if (!container) return;
+  logger.fnStart('renderModList', { modsCount: mods.length });
+  
+  if (!container) {
+    logger.warn('Container not found');
+    return;
+  }
   
   if (mods.length === 0) {
+    logger.info('No mods to display, showing empty state');
     const msg = appState.state.currentCategoryFilter === 'all' 
       ? t('emptyState')
       : t('noModsWithCategory');
     container.innerHTML = `<div class="empty-state">${msg}</div>`;
+    logger.fnEnd('renderModList');
     return;
   }
   
+  logger.info(`Rendering ${mods.length} mod cards`);
   const modsHtml = mods.map((mod, index) => createModCard(mod, index)).join('');
   container.innerHTML = modsHtml;
 }

@@ -7,6 +7,9 @@ import { escapeHtml } from '../utils/sanitize.js';
 import { PREDEFINED_CATEGORIES } from '../constants.js';
 import { t } from '../services/i18nService.js';
 import { appState } from '../state/appState.js';
+import { createLogger } from '../utils/logger.js';
+
+const logger = createLogger('CategoryUI');
 
 /**
  * Render categories grid with checkboxes
@@ -14,7 +17,14 @@ import { appState } from '../state/appState.js';
  * @param {Array} selectedCategories - Currently selected categories
  */
 export function renderCategoriesGrid(container, selectedCategories = []) {
-  if (!container) return;
+  logger.fnStart('renderCategoriesGrid', { selectedCategories });
+  
+  if (!container) {
+    logger.warn('Container not found');
+    return;
+  }
+  
+  logger.info(`Rendering ${PREDEFINED_CATEGORIES.length} category checkboxes`);
   
   container.innerHTML = PREDEFINED_CATEGORIES.map(category => `
     <label class="category-checkbox">
@@ -27,6 +37,8 @@ export function renderCategoriesGrid(container, selectedCategories = []) {
       <span>${escapeHtml(category)}</span>
     </label>
   `).join('');
+  
+  logger.fnEnd('renderCategoriesGrid');
 }
 
 /**
